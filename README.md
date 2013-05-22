@@ -1,0 +1,36 @@
+# Find Classes By Text
+
+An [AutoIt][] GUI script to enumerate a window's controls grouped by
+their text content.
+
+## Explanation
+
+Sometimes it can be difficult to automate some software for one of a
+few reasons:
+
+*   Perhaps different fields share a common control ID.
+*   Perhaps the GUI designer overlapped many controls, so
+    [AutoIt Window Info][] won't show you the one that you actually
+    have your mouse over.
+
+This script aims to provide a solution.  The idea is for you to
+populate such a GUI with different values in each field, and then allow
+this script to 'capture' that window.  It will then group controls
+sharing the same text values and display their `ClassNameNN`s, which is
+generally** an excellent way to reliably differentiate between
+controls.
+
+## Operation
+
+1.  Prepare the window that you wish to automate.
+2.  Start this script.
+3.  Click the **Capture** button.
+4.  Activate the other window by clicking on it.
+5.  Return to the script's window and browse the assembled TreeView.
+
+** Proven not to with with .NET applications;
+[_ControlGetHandleByPos()][] may be your only hope there.
+
+[AutoIt]: http://www.autoitscript.com/
+[AutoIt Window Info]: http://www.autoitscript.com/autoit3/docs/intro/au3spy.htm
+[_ControlGetHandleByPos()]: http://www.autoitscript.com/forum/topic/14323-controlgethandlebypos/
