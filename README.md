@@ -28,7 +28,7 @@ controls.
 4.  Activate the other window by clicking on it.
 5.  Return to the script's window and browse the assembled TreeView.
 
-** Proven not to with with .NET applications;
+** Proven not to work with .NET applications;
 [_ControlGetHandleByPos()][] may be your only hope there.
 
 ## Version history
