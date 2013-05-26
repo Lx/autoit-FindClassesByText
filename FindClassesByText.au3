@@ -10,7 +10,10 @@
 ; =============================================================================
 
 
-#Include <GUIConstants.au3>
+#include <ButtonConstants.au3>
+#include <GUIConstantsEx.au3>
+#include <TreeViewConstants.au3>
+#include <WindowsConstants.au3>
 
 Opt('GUIOnEventMode', True)
 Opt('MustDeclareVars', True)

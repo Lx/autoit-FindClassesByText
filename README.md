@@ -33,6 +33,11 @@ controls.
 
 ## Version history
 
+### Next release
+
+*   Adjust for script-breaking changes in AutoIt v3.2.12.0 (thanks to
+    [ptrex][])
+
 ### v1.0 (4/Mar/2006)
 
 *   Initial release
@@ -40,3 +45,4 @@ controls.
 [AutoIt]: http://www.autoitscript.com/
 [AutoIt Window Info]: http://www.autoitscript.com/autoit3/docs/intro/au3spy.htm
 [_ControlGetHandleByPos()]: http://www.autoitscript.com/forum/topic/14323-controlgethandlebypos/
+[ptrex]: http://www.autoitscript.com/forum/topic/22490-find-classes-by-text/#entry623888
