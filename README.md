@@ -31,6 +31,12 @@ controls.
 ** Proven not to with with .NET applications;
 [_ControlGetHandleByPos()][] may be your only hope there.
 
+## Version history
+
+### v1.0 (4/Mar/2006)
+
+*   Initial release
+
 [AutoIt]: http://www.autoitscript.com/
 [AutoIt Window Info]: http://www.autoitscript.com/autoit3/docs/intro/au3spy.htm
 [_ControlGetHandleByPos()]: http://www.autoitscript.com/forum/topic/14323-controlgethandlebypos/
