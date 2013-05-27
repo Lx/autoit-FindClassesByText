@@ -35,19 +35,19 @@ Global Const $BTN_HEIGHT = 40
 PrepareGUI()
 
 While True
-	WinWaitNotActive($Handles[$HAN_GUI])
-	; Another window is active. Capture it if appropriate.
-	If $Capturing Then
-		Beep(400, 50)
-		; Grab title for display on button.
-		$CapturedTitle = WinGetTitle('')
-		; Get the information and build a TreeView.
-		Local $TextClasses = WinGetClassesByText(WinGetHandle(''))
-		BuildTree($TextClasses)
-		; Return to normal operation mode.
-		ExitCaptureMode()
-	EndIf
-	WinWaitActive($Handles[$HAN_GUI])
+    WinWaitNotActive($Handles[$HAN_GUI])
+    ; Another window is active. Capture it if appropriate.
+    If $Capturing Then
+        Beep(400, 50)
+        ; Grab title for display on button.
+        $CapturedTitle = WinGetTitle('')
+        ; Get the information and build a TreeView.
+        Local $TextClasses = WinGetClassesByText(WinGetHandle(''))
+        BuildTree($TextClasses)
+        ; Return to normal operation mode.
+        ExitCaptureMode()
+    EndIf
+    WinWaitActive($Handles[$HAN_GUI])
 WEnd
 
 
@@ -58,25 +58,25 @@ WEnd
 
 Func PrepareGUI()
 
-	; Create the window.
-	$Handles[$HAN_GUI] = GUICreate('Find Classes By Text', _
-			@DesktopWidth / 2, @DesktopHeight / 2, Default, Default, _
-			BitOR($GUI_SS_DEFAULT_GUI, $WS_SIZEBOX, $WS_MAXIMIZEBOX))
-	GUISetOnEvent($GUI_EVENT_RESIZED, 'Event_GUIResize')
-	GUISetOnEvent($GUI_EVENT_CLOSE, 'Event_GUIClose')
+    ; Create the window.
+    $Handles[$HAN_GUI] = GUICreate('Find Classes By Text', _
+            @DesktopWidth / 2, @DesktopHeight / 2, Default, Default, _
+            BitOR($GUI_SS_DEFAULT_GUI, $WS_SIZEBOX, $WS_MAXIMIZEBOX))
+    GUISetOnEvent($GUI_EVENT_RESIZED, 'Event_GUIResize')
+    GUISetOnEvent($GUI_EVENT_CLOSE, 'Event_GUIClose')
 
-	; Create the Capture button.
-	$Handles[$HAN_BTN] = GUICtrlCreateButton($CapturedTitle, _
-			Default, Default, Default, Default, $BS_MULTILINE)
-	GUICtrlSetResizing($Handles[$HAN_BTN], _
-			$GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
-	GUICtrlSetOnEvent($Handles[$HAN_BTN], 'Event_BtnCapture')
+    ; Create the Capture button.
+    $Handles[$HAN_BTN] = GUICtrlCreateButton($CapturedTitle, _
+            Default, Default, Default, Default, $BS_MULTILINE)
+    GUICtrlSetResizing($Handles[$HAN_BTN], _
+            $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
+    GUICtrlSetOnEvent($Handles[$HAN_BTN], 'Event_BtnCapture')
 
-	; Arrange everything nicely.
-	RepositionControls()
+    ; Arrange everything nicely.
+    RepositionControls()
 
-	; Show the GUI.
-	GUISetState()
+    ; Show the GUI.
+    GUISetState()
 
 EndFunc
 
@@ -88,31 +88,31 @@ EndFunc
 
 Func BuildTree(Const ByRef $TextClasses)
 
-	; Delete any existing TreeView; this is the easiest way to get rid of all
-	; existing window data.
-	If $Handles[$HAN_TREE] <> '' Then GUICtrlDelete($Handles[$HAN_TREE])
+    ; Delete any existing TreeView; this is the easiest way to get rid of all
+    ; existing window data.
+    If $Handles[$HAN_TREE] <> '' Then GUICtrlDelete($Handles[$HAN_TREE])
 
-	; Create a new TreeView.
-	$Handles[$HAN_TREE] = GUICtrlCreateTreeView(0, 0, 0, 0, _
-			$GUI_SS_DEFAULT_TREEVIEW, $WS_EX_CLIENTEDGE)
-	GUICtrlSetResizing($Handles[$HAN_TREE], $GUI_DOCKBORDERS)
+    ; Create a new TreeView.
+    $Handles[$HAN_TREE] = GUICtrlCreateTreeView(0, 0, 0, 0, _
+            $GUI_SS_DEFAULT_TREEVIEW, $WS_EX_CLIENTEDGE)
+    GUICtrlSetResizing($Handles[$HAN_TREE], $GUI_DOCKBORDERS)
 
-	; Keep everything nicely arranged.
-	RepositionControls()
+    ; Keep everything nicely arranged.
+    RepositionControls()
 
-	; Populate with text snippets and associated ClassNameNNs.
-	For $I = 1 To $TextClasses[0][0]
-		Local $TextNode = GUICtrlCreateTreeViewItem( _
-				"'" & $TextClasses[$I][0] & "'", $Handles[$HAN_TREE])
-		Local $Classes = $TextClasses[$I][1]
-		While StringInStr($Classes, @LF)
-			GUICtrlCreateTreeViewItem( _
-					StringLeft($Classes, StringInStr($Classes, @LF) - 1), _
-					$TextNode)
-			$Classes = StringTrimLeft($Classes, StringInStr($Classes, @LF))
-		WEnd
-		GUICtrlCreateTreeViewItem($Classes, $TextNode)
-	Next
+    ; Populate with text snippets and associated ClassNameNNs.
+    For $I = 1 To $TextClasses[0][0]
+        Local $TextNode = GUICtrlCreateTreeViewItem( _
+                "'" & $TextClasses[$I][0] & "'", $Handles[$HAN_TREE])
+        Local $Classes = $TextClasses[$I][1]
+        While StringInStr($Classes, @LF)
+            GUICtrlCreateTreeViewItem( _
+                    StringLeft($Classes, StringInStr($Classes, @LF) - 1), _
+                    $TextNode)
+            $Classes = StringTrimLeft($Classes, StringInStr($Classes, @LF))
+        WEnd
+        GUICtrlCreateTreeViewItem($Classes, $TextNode)
+    Next
 
 EndFunc
 
@@ -125,17 +125,17 @@ EndFunc
 
 Func RepositionControls()
 
-	Local Const $Area = WinGetClientSize($Handles[$HAN_GUI])
-	Local Const $MaxWidth = $Area[0] - 2 * $PADDING
-	Local Const $MaxHeight = $Area[1] - 2 * $PADDING
+    Local Const $Area = WinGetClientSize($Handles[$HAN_GUI])
+    Local Const $MaxWidth = $Area[0] - 2 * $PADDING
+    Local Const $MaxHeight = $Area[1] - 2 * $PADDING
 
-	GUICtrlSetPos($Handles[$HAN_BTN], _
-			$PADDING, $PADDING, _
-			$MaxWidth, $BTN_HEIGHT)
+    GUICtrlSetPos($Handles[$HAN_BTN], _
+            $PADDING, $PADDING, _
+            $MaxWidth, $BTN_HEIGHT)
 
-	If $Handles[$HAN_TREE] <> '' Then GUICtrlSetPos($Handles[$HAN_TREE], _
-			$PADDING, 2 * $PADDING + $BTN_HEIGHT, _
-			$MaxWidth, $MaxHeight - $BTN_HEIGHT - $PADDING)
+    If $Handles[$HAN_TREE] <> '' Then GUICtrlSetPos($Handles[$HAN_TREE], _
+            $PADDING, 2 * $PADDING + $BTN_HEIGHT, _
+            $MaxWidth, $MaxHeight - $BTN_HEIGHT - $PADDING)
 
 EndFunc
 
@@ -147,7 +147,7 @@ EndFunc
 
 Func Event_GUIClose()
 
-	Exit
+    Exit
 
 EndFunc
 
@@ -159,7 +159,7 @@ EndFunc
 
 Func Event_GUIResize()
 
-	RepositionControls()
+    RepositionControls()
 
 EndFunc
 
@@ -172,11 +172,11 @@ EndFunc
 
 Func Event_BtnCapture()
 
-	If $Capturing Then
-		ExitCaptureMode()
-	Else
-		EnterCaptureMode()
-	EndIf
+    If $Capturing Then
+        ExitCaptureMode()
+    Else
+        EnterCaptureMode()
+    EndIf
 
 EndFunc
 
@@ -191,15 +191,15 @@ EndFunc
 
 Func WinGetClassesByText($Title, $Text = '')
 
-	Local $Classes = WinGetControlIDs($Title, $Text)
-	Local $Texts[$Classes[0] + 1][2]
-	$Texts[0][0] = 0
+    Local $Classes = WinGetControlIDs($Title, $Text)
+    Local $Texts[$Classes[0] + 1][2]
+    $Texts[0][0] = 0
 
-	For $I = 1 To $Classes[0]
-		AddClass($Texts, ControlGetText($Title, $Text, $Classes[$I]), $Classes[$I])
-	Next
+    For $I = 1 To $Classes[0]
+        AddClass($Texts, ControlGetText($Title, $Text, $Classes[$I]), $Classes[$I])
+    Next
 
-	Return $Texts
+    Return $Texts
 
 EndFunc
 
@@ -211,43 +211,43 @@ EndFunc
 
 Func WinGetControlIDs($sTitle, $sText = '')
 
-	Local $avClasses[1], $iCounter, $sClasses, $sClassStub, $sClassStubList
+    Local $avClasses[1], $iCounter, $sClasses, $sClassStub, $sClassStubList
 
-	; Request an unnumbered class list.
-	$sClassStubList = WinGetClassList($sTitle, $sText)
+    ; Request an unnumbered class list.
+    $sClassStubList = WinGetClassList($sTitle, $sText)
 
-	; Return an empty response if no controls exist.
-	; Additionally set @Error if the specified window was not found.
-	If $sClassStubList = '' Then
-		If @Error Then SetError(1)
-		$avClasses[0] = 0
-		Return $avClasses
-	EndIf
+    ; Return an empty response if no controls exist.
+    ; Additionally set @Error if the specified window was not found.
+    If $sClassStubList = '' Then
+        If @Error Then SetError(1)
+        $avClasses[0] = 0
+        Return $avClasses
+    EndIf
 
-	; Prepare an array to hold the numbered classes.
-	ReDim $avClasses[StringLen($sClassStubList) - _
-			StringLen(StringReplace($sClassStubList, @LF, '')) + 1]
+    ; Prepare an array to hold the numbered classes.
+    ReDim $avClasses[StringLen($sClassStubList) - _
+            StringLen(StringReplace($sClassStubList, @LF, '')) + 1]
 
-	; The first element will contain a count.
-	$avClasses[0] = 0
+    ; The first element will contain a count.
+    $avClasses[0] = 0
 
-	; Count each unique class, enumerate them in the array and remove them from
-	; the string.
-	Do
-		$sClassStub = _
-				StringLeft($sClassStubList, StringInStr($sClassStubList, @LF))
-		$iCounter = 0
-		While StringInStr($sClassStubList, $sClassStub)
-			$avClasses[0] += 1
-			$iCounter += 1
-			$avClasses[$avClasses[0]] = _
-					StringTrimRight($sClassStub, 1) & $iCounter
-			$sClassStubList = _
-					StringReplace($sClassStubList, $sClassStub, '', 1)
-		WEnd
-	Until $sClassStubList = ''
+    ; Count each unique class, enumerate them in the array and remove them from
+    ; the string.
+    Do
+        $sClassStub = _
+                StringLeft($sClassStubList, StringInStr($sClassStubList, @LF))
+        $iCounter = 0
+        While StringInStr($sClassStubList, $sClassStub)
+            $avClasses[0] += 1
+            $iCounter += 1
+            $avClasses[$avClasses[0]] = _
+                    StringTrimRight($sClassStub, 1) & $iCounter
+            $sClassStubList = _
+                    StringReplace($sClassStubList, $sClassStub, '', 1)
+        WEnd
+    Until $sClassStubList = ''
 
-	Return $avClasses
+    Return $avClasses
 
 EndFunc
 
@@ -260,17 +260,17 @@ EndFunc
 
 Func AddClass(ByRef $Texts, $Text, $Class)
 
-	For $I = 1 To $Texts[0][0]
-		If $Text == $Texts[$I][0] Then
-			$Texts[$I][1] &= @LF & $Class
-			Return
-		EndIf
-	Next
+    For $I = 1 To $Texts[0][0]
+        If $Text == $Texts[$I][0] Then
+            $Texts[$I][1] &= @LF & $Class
+            Return
+        EndIf
+    Next
 
-	; This point is reached if the text doesn't already exist in the list.
-	$Texts[0][0] += 1
-	$Texts[$Texts[0][0]][0] = $Text
-	$Texts[$Texts[0][0]][1] = $Class
+    ; This point is reached if the text doesn't already exist in the list.
+    $Texts[0][0] += 1
+    $Texts[$Texts[0][0]][0] = $Text
+    $Texts[$Texts[0][0]][1] = $Class
 
 EndFunc
 
@@ -281,9 +281,9 @@ EndFunc
 
 Func EnterCaptureMode()
 
-	$Capturing = True
-	GUICtrlSetData($Handles[$HAN_BTN], _
-			'[Activate window to be captured or click to cancel]')
+    $Capturing = True
+    GUICtrlSetData($Handles[$HAN_BTN], _
+            '[Activate window to be captured or click to cancel]')
 
 EndFunc
 
@@ -295,7 +295,7 @@ EndFunc
 
 Func ExitCaptureMode()
 
-	$Capturing = False
-	GUICtrlSetData($Handles[$HAN_BTN], $CapturedTitle)
+    $Capturing = False
+    GUICtrlSetData($Handles[$HAN_BTN], $CapturedTitle)
 
 EndFunc
