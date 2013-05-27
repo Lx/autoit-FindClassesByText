@@ -20,8 +20,7 @@ Opt('MustDeclareVars', True)
 Opt('WinWaitDelay', 0)
 
 ; Variables to be accessed by event-handling functions.
-Global Enum $HAN_GUI, $HAN_TREE, $HAN_BTN, $HAN_COUNT
-Global $Handles[$HAN_COUNT]
+Global $GUIHandle, $TreeHandle, $BtnHandle
 Global $CapturedTitle = '[No window has been captured]'
 Global $Capturing = False
 
@@ -35,7 +34,7 @@ Global Const $BTN_HEIGHT = 40
 PrepareGUI()
 
 While True
-    WinWaitNotActive($Handles[$HAN_GUI])
+    WinWaitNotActive($GUIHandle)
     ; Another window is active. Capture it if appropriate.
     If $Capturing Then
         Beep(400, 50)
@@ -47,7 +46,7 @@ While True
         ; Return to normal operation mode.
         ExitCaptureMode()
     EndIf
-    WinWaitActive($Handles[$HAN_GUI])
+    WinWaitActive($GUIHandle)
 WEnd
 
 
@@ -59,18 +58,18 @@ WEnd
 Func PrepareGUI()
 
     ; Create the window.
-    $Handles[$HAN_GUI] = GUICreate('Find Classes By Text', _
+    $GUIHandle = GUICreate('Find Classes By Text', _
             @DesktopWidth / 2, @DesktopHeight / 2, Default, Default, _
             BitOR($GUI_SS_DEFAULT_GUI, $WS_SIZEBOX, $WS_MAXIMIZEBOX))
     GUISetOnEvent($GUI_EVENT_RESIZED, 'Event_GUIResize')
     GUISetOnEvent($GUI_EVENT_CLOSE, 'Event_GUIClose')
 
     ; Create the Capture button.
-    $Handles[$HAN_BTN] = GUICtrlCreateButton($CapturedTitle, _
+    $BtnHandle = GUICtrlCreateButton($CapturedTitle, _
             Default, Default, Default, Default, $BS_MULTILINE)
-    GUICtrlSetResizing($Handles[$HAN_BTN], _
+    GUICtrlSetResizing($BtnHandle, _
             $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
-    GUICtrlSetOnEvent($Handles[$HAN_BTN], 'Event_BtnCapture')
+    GUICtrlSetOnEvent($BtnHandle, 'Event_BtnCapture')
 
     ; Arrange everything nicely.
     RepositionControls()
@@ -90,12 +89,12 @@ Func BuildTree(Const ByRef $TextClasses)
 
     ; Delete any existing TreeView; this is the easiest way to get rid of all
     ; existing window data.
-    If $Handles[$HAN_TREE] <> '' Then GUICtrlDelete($Handles[$HAN_TREE])
+    If $TreeHandle <> '' Then GUICtrlDelete($TreeHandle)
 
     ; Create a new TreeView.
-    $Handles[$HAN_TREE] = GUICtrlCreateTreeView(0, 0, 0, 0, _
+    $TreeHandle = GUICtrlCreateTreeView(0, 0, 0, 0, _
             $GUI_SS_DEFAULT_TREEVIEW, $WS_EX_CLIENTEDGE)
-    GUICtrlSetResizing($Handles[$HAN_TREE], $GUI_DOCKBORDERS)
+    GUICtrlSetResizing($TreeHandle, $GUI_DOCKBORDERS)
 
     ; Keep everything nicely arranged.
     RepositionControls()
@@ -103,7 +102,7 @@ Func BuildTree(Const ByRef $TextClasses)
     ; Populate with text snippets and associated ClassNameNNs.
     For $I = 1 To $TextClasses[0][0]
         Local $TextNode = GUICtrlCreateTreeViewItem( _
-                "'" & $TextClasses[$I][0] & "'", $Handles[$HAN_TREE])
+                "'" & $TextClasses[$I][0] & "'", $TreeHandle)
         Local $Classes = $TextClasses[$I][1]
         While StringInStr($Classes, @LF)
             GUICtrlCreateTreeViewItem( _
@@ -125,15 +124,15 @@ EndFunc
 
 Func RepositionControls()
 
-    Local Const $Area = WinGetClientSize($Handles[$HAN_GUI])
+    Local Const $Area = WinGetClientSize($GUIHandle)
     Local Const $MaxWidth = $Area[0] - 2 * $PADDING
     Local Const $MaxHeight = $Area[1] - 2 * $PADDING
 
-    GUICtrlSetPos($Handles[$HAN_BTN], _
+    GUICtrlSetPos($BtnHandle, _
             $PADDING, $PADDING, _
             $MaxWidth, $BTN_HEIGHT)
 
-    If $Handles[$HAN_TREE] <> '' Then GUICtrlSetPos($Handles[$HAN_TREE], _
+    If $TreeHandle <> '' Then GUICtrlSetPos($TreeHandle, _
             $PADDING, 2 * $PADDING + $BTN_HEIGHT, _
             $MaxWidth, $MaxHeight - $BTN_HEIGHT - $PADDING)
 
@@ -282,7 +281,7 @@ EndFunc
 Func EnterCaptureMode()
 
     $Capturing = True
-    GUICtrlSetData($Handles[$HAN_BTN], _
+    GUICtrlSetData($BtnHandle, _
             '[Activate window to be captured or click to cancel]')
 
 EndFunc
@@ -296,6 +295,6 @@ EndFunc
 Func ExitCaptureMode()
 
     $Capturing = False
-    GUICtrlSetData($Handles[$HAN_BTN], $CapturedTitle)
+    GUICtrlSetData($BtnHandle, $CapturedTitle)
 
 EndFunc
