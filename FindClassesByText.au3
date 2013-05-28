@@ -102,7 +102,7 @@ Func BuildTree(Const ByRef $TextClasses)
     ; Populate with text snippets and associated ClassNameNNs.
     For $I = 1 To $TextClasses[0][0]
         Local $TextNode = GUICtrlCreateTreeViewItem( _
-                "'" & $TextClasses[$I][0] & "'", $TreeHandle)
+                Escape($TextClasses[$I][0]), $TreeHandle)
         Local $Classes = $TextClasses[$I][1]
         While StringInStr($Classes, @LF)
             GUICtrlCreateTreeViewItem( _
@@ -296,5 +296,88 @@ Func ExitCaptureMode()
 
     $Capturing = False
     GUICtrlSetData($BtnHandle, $CapturedTitle)
+
+EndFunc
+
+
+; ==============================================================================
+; Escape($Input):
+;     Returns an escaped version of $Input such that Execute(Escape($Input))
+;     would return $Input.  Intended to make some special character sequences
+;     easier to spot, and also to allow any string to be conveyed meaningfully
+;     on a single line.
+; ==============================================================================
+
+Func Escape(Const ByRef $InputStr)
+
+    ; String representations of certain special character sequences.  Longer
+    ; sequences must be defined AFTER shorter ones contained by them in order
+    ; to be correctly honoured (i.e. @CRLF after @CR).
+    Local $MacroFor[4][2] = [ _
+        [ @CR,      '@CR'   ], _
+        [ @CRLF,    '@CRLF' ], _
+        [ @LF,      '@LF'   ], _
+        [ @TAB,     '@TAB'  ] _
+    ]
+
+    ; The output string to be built incrementally and eventually returned.
+    Local $OutputStr = ''
+
+    ; Process the input string as a series of optional string literals followed
+    ; by optional macros.  Start at the beginning and keep going until all of
+    ; the input string has been examined.
+    Local $StartPos = 1
+    While $StartPos <= StringLen($InputStr)
+
+        ; Find the first position in this part of the string where literal
+        ; string data ends.  Assume at first that the entire remainder of the
+        ; string is one big literal.  If we find a macro, remember which one.
+        Local $LiteralEndPos = StringLen($InputStr) + 1
+        Local $MacroID = -1
+
+        ; Look for each macro and remember which one appears first.  Check them
+        ; all, because e.g. @CRLF would have the same position as @CR.
+        Local $I
+        For $I = 0 To UBound($MacroFor, 1) - 1
+            Local $ThisMacroPos _
+                = StringInStr($InputStr, $MacroFor[$I][0], 0, 1, $StartPos)
+            If $ThisMacroPos = 0 Then ContinueLoop
+            If $LiteralEndPos > 0 AND $ThisMacroPos > $LiteralEndPos _
+                Then ContinueLoop
+            $LiteralEndPos = $ThisMacroPos
+            $MacroID = $I
+        Next
+
+        ; Escape the string literal if there is one.
+        Local $Literal _
+            = StringMid($InputStr, $StartPos, $LiteralEndPos - $StartPos)
+        If $Literal <> '' Then
+            If $OutputStr <> '' Then $OutputStr &= ' & '
+            If _
+                StringInStr($Literal, '"') _
+                AND NOT StringInStr($Literal, "'") _
+            Then
+                ; It contains double quotes but not single quotes.
+                ; Surround it with single quotes.
+                $OutputStr &= "'" & $Literal & "'"
+            Else
+                ; It contains no quotes, or just single, or both.
+                ; Surround it with doubles and escape any doubles within.
+                $OutputStr &= '"' & StringReplace($Literal, '"', '""') & '"'
+            EndIf
+            $StartPos = $LiteralEndPos
+        EndIf
+
+        ; If we found a macro earlier then write it out.
+        If $MacroID >= 0 Then
+            If $OutputStr <> '' Then $OutputStr &= ' & '
+            $OutputStr &= $MacroFor[$MacroID][1]
+            $StartPos += StringLen($MacroFor[$MacroID][0])
+        EndIf
+
+    WEnd
+
+    If $OutputStr == '' Then $OutputStr = '""'
+    Return $OutputStr
 
 EndFunc

@@ -33,6 +33,11 @@ controls.
 
 ## Version history
 
+### Next release
+
+*   Show control text as an AutoIt string definition (with macros as
+    appropriate) instead of just naively wrapping it in single quotes
+
 ### v1.1 (27/May/2013)
 
 *   Adjust for script-breaking changes in AutoIt v3.2.12.0 (thanks to
