@@ -128,16 +128,19 @@ EndFunc
 
 Func RepositionControls()
 
-    Local Const $Area = WinGetClientSize($GUIHandle)
-    Local Const $MaxWidth = $Area[0] - 2 * $PADDING
-    Local Const $MaxHeight = $Area[1] - 2 * $PADDING
+    Local Const $Area       = WinGetClientSize($GUIHandle)
+    Local Const $MinLeft    = $PADDING
+    Local Const $MaxLeft    = $Area[0] - $PADDING
+    Local Const $MinTop     = $PADDING
+    Local Const $MaxWidth   = $MaxLeft - $MinLeft
+    Local Const $MaxHeight  = $Area[1] - 2 * $PADDING
 
     GUICtrlSetPos($CaptureBtnHandle, _
-            $PADDING, $PADDING, _
+            $MinLeft, $MinTop, _
             $MaxWidth, $BTN_HEIGHT)
 
-    If $TreeHandle <> '' Then GUICtrlSetPos($TreeHandle, _
-            $PADDING, 2 * $PADDING + $BTN_HEIGHT, _
+    If $TreeHandle Then GUICtrlSetPos($TreeHandle, _
+            $MinLeft, $MinTop + $BTN_HEIGHT + $PADDING, _
             $MaxWidth, $MaxHeight - $BTN_HEIGHT - $PADDING)
 
 EndFunc
