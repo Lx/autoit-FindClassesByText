@@ -23,6 +23,7 @@ Opt('WinWaitDelay', 0)
 Global $GUIHandle, $TreeHandle, $BtnHandle
 Global $CapturedTitle = '[No window has been captured]'
 Global $Capturing = False
+Global $TextClasses
 
 ; GUI positioning constants.
 Global Const $PADDING = 12
@@ -42,8 +43,8 @@ While True
         ; Grab title for display on button.
         $CapturedTitle = WinGetTitle($CapturedWindow)
         ; Get the information and build a TreeView.
-        Local $TextClasses = WinGetClassesByText($CapturedWindow)
-        BuildTree($TextClasses)
+        $TextClasses = WinGetClassesByText($CapturedWindow)
+        BuildTree()
         ; Return to normal operation mode.
         ExitCaptureMode()
     EndIf
@@ -86,7 +87,7 @@ EndFunc
 ;   associated ClassNameNNs.
 ; =============================================================================
 
-Func BuildTree(Const ByRef $TextClasses)
+Func BuildTree()
 
     ; Delete any existing TreeView; this is the easiest way to get rid of all
     ; existing window data.
