@@ -23,6 +23,7 @@ Opt('WinWaitDelay', 0)
 Global $GUIHandle, $TreeHandle, $CaptureBtnHandle
 Global $CapturedTitle = '[No window has been captured]'
 Global $InCaptureMode = False
+Global $Capturing = False
 Global $TextClasses
 
 ; GUI positioning constants.
@@ -40,6 +41,8 @@ While True
     If $InCaptureMode Then
         Local $CapturedWindow = WinGetHandle('[ACTIVE]')
         Beep(400, 50)
+        $Capturing = True
+        UpdateControlStates()
         ; Grab title for display on button.
         $CapturedTitle = WinGetTitle($CapturedWindow)
         ; Get the information and build a TreeView.
@@ -149,10 +152,16 @@ EndFunc
 Func UpdateControlStates()
 
     If $InCaptureMode Then
-        GUICtrlSetData($CaptureBtnHandle, _
-            '[Activate window to be captured or click to cancel]')
+        If $Capturing Then
+            GUICtrlSetState($CaptureBtnHandle, $GUI_DISABLE)
+            GUICtrlSetData($CaptureBtnHandle, 'Capturing...')
+        Else
+            GUICtrlSetData($CaptureBtnHandle, _
+                '[Activate window to be captured or click to cancel]')
+        EndIf
     Else
         GUICtrlSetData($CaptureBtnHandle, $CapturedTitle)
+        GUICtrlSetState($CaptureBtnHandle, $GUI_ENABLE)
     EndIf
 
 EndFunc
@@ -312,6 +321,7 @@ EndFunc
 
 Func ExitCaptureMode()
 
+    $Capturing = False
     $InCaptureMode = False
     UpdateControlStates()
 
