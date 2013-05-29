@@ -37,11 +37,12 @@ While True
     WinWaitNotActive($GUIHandle)
     ; Another window is active. Capture it if appropriate.
     If $Capturing Then
+        Local $CapturedWindow = WinGetHandle('[ACTIVE]')
         Beep(400, 50)
         ; Grab title for display on button.
-        $CapturedTitle = WinGetTitle('')
+        $CapturedTitle = WinGetTitle($CapturedWindow)
         ; Get the information and build a TreeView.
-        Local $TextClasses = WinGetClassesByText(WinGetHandle(''))
+        Local $TextClasses = WinGetClassesByText($CapturedWindow)
         BuildTree($TextClasses)
         ; Return to normal operation mode.
         ExitCaptureMode()
