@@ -1,7 +1,7 @@
 ; =============================================================================
 ;
-; Find Classes by Text v1.1
-; Written by Alex Peters, 27/May/2013
+; Find Classes by Text v1.2
+; Written by Alex Peters, 29/May/2013
 ;
 ; Lists the ClassNameNNs of a window grouped by the displayed text. Useful for
 ; determining the ClassNameNN of e.g. a text control when AutoIt Window Info
@@ -66,7 +66,7 @@ WEnd
 Func PrepareGUI()
 
     ; Create the window.
-    $GUIHandle = GUICreate('Find Classes By Text v1.1', _
+    $GUIHandle = GUICreate('Find Classes by Text v1.2', _
             @DesktopWidth / 2, @DesktopHeight / 2, Default, Default, _
             BitOR($GUI_SS_DEFAULT_GUI, $WS_SIZEBOX, $WS_MAXIMIZEBOX))
     GUISetOnEvent($GUI_EVENT_RESIZED, 'Event_GUIResize')

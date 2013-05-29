@@ -1,4 +1,4 @@
-# Find Classes By Text
+# Find Classes by Text
 
 An [AutoIt][] GUI script to enumerate a window's controls grouped by
 their text content.
@@ -33,7 +33,7 @@ controls.
 
 ## Version history
 
-### Next release
+### v1.2 (29/May/2013)
 
 *   Add "Copy Item" and "Copy All" buttons to copy information from the
     TreeView to the clipboard (thanks to [big_daddy][] for the idea)
