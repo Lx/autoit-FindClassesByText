@@ -20,7 +20,7 @@ Opt('MustDeclareVars', True)
 Opt('WinWaitDelay', 0)
 
 ; Variables to be accessed by event-handling functions.
-Global $GUIHandle, $TreeHandle, $BtnHandle
+Global $GUIHandle, $TreeHandle, $CaptureBtnHandle
 Global $CapturedTitle = '[No window has been captured]'
 Global $Capturing = False
 Global $TextClasses
@@ -67,11 +67,11 @@ Func PrepareGUI()
     GUISetOnEvent($GUI_EVENT_CLOSE, 'Event_GUIClose')
 
     ; Create the Capture button.
-    $BtnHandle = GUICtrlCreateButton($CapturedTitle, _
+    $CaptureBtnHandle = GUICtrlCreateButton($CapturedTitle, _
             Default, Default, Default, Default, $BS_MULTILINE)
-    GUICtrlSetResizing($BtnHandle, _
+    GUICtrlSetResizing($CaptureBtnHandle, _
             $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
-    GUICtrlSetOnEvent($BtnHandle, 'Event_BtnCapture')
+    GUICtrlSetOnEvent($CaptureBtnHandle, 'Event_BtnCapture')
 
     ; Arrange everything nicely.
     RepositionControls()
@@ -130,7 +130,7 @@ Func RepositionControls()
     Local Const $MaxWidth = $Area[0] - 2 * $PADDING
     Local Const $MaxHeight = $Area[1] - 2 * $PADDING
 
-    GUICtrlSetPos($BtnHandle, _
+    GUICtrlSetPos($CaptureBtnHandle, _
             $PADDING, $PADDING, _
             $MaxWidth, $BTN_HEIGHT)
 
@@ -283,7 +283,7 @@ EndFunc
 Func EnterCaptureMode()
 
     $Capturing = True
-    GUICtrlSetData($BtnHandle, _
+    GUICtrlSetData($CaptureBtnHandle, _
             '[Activate window to be captured or click to cancel]')
 
 EndFunc
@@ -297,7 +297,7 @@ EndFunc
 Func ExitCaptureMode()
 
     $Capturing = False
-    GUICtrlSetData($BtnHandle, $CapturedTitle)
+    GUICtrlSetData($CaptureBtnHandle, $CapturedTitle)
 
 EndFunc
 
