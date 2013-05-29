@@ -35,9 +35,8 @@ controls.
 
 ### Next release
 
-*   Add a "Copy Item" button to copy the text of the currently selected
-    TreeView item to the clipboard (thanks to [big_daddy][] for the
-    idea)
+*   Add "Copy Item" and "Copy All" buttons to copy information from the
+    TreeView to the clipboard (thanks to [big_daddy][] for the idea)
 *   Show control text as an AutoIt string definition (with macros as
     appropriate) instead of just naively wrapping it in single quotes
 

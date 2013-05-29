@@ -21,6 +21,7 @@ Opt('WinWaitDelay', 0)
 
 ; Variables to be accessed by event-handling functions.
 Global $GUIHandle, $TreeHandle, $CaptureBtnHandle, $CopyItemBtnHandle
+Global $CopyAllBtnHandle
 Global $CapturedTitle = '[No window captured yet; click to capture]'
 Global $InCaptureMode = False
 Global $Capturing = False
@@ -84,6 +85,13 @@ Func PrepareGUI()
     GUICtrlSetResizing($CopyItemBtnHandle, _
             $GUI_DOCKWIDTH + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
     GUICtrlSetOnEvent($CopyItemBtnHandle, 'CopySelectedItem')
+
+    ; Create the Copy All button.
+    $CopyAllBtnHandle = GUICtrlCreateButton('Copy' & @LF & '&all', _
+            Default, Default, Default, Default, $BS_MULTILINE)
+    GUICtrlSetResizing($CopyAllBtnHandle, _
+            $GUI_DOCKWIDTH + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
+    GUICtrlSetOnEvent($CopyAllBtnHandle, 'CopyAllItems')
 
     ; Arrange everything nicely.
     RepositionControls()
@@ -149,8 +157,11 @@ Func RepositionControls()
 
     GUICtrlSetPos($CaptureBtnHandle, _
             $MinLeft, $MinTop, _
-            $MaxWidth - $COPY_BTN_WIDTH - $PADDING, $BTN_HEIGHT)
+            $MaxWidth - 2 * $COPY_BTN_WIDTH - 2 * $PADDING, $BTN_HEIGHT)
     GUICtrlSetPos($CopyItemBtnHandle, _
+            $MaxLeft - 2 * $COPY_BTN_WIDTH - $PADDING, $MinTop, _
+            $COPY_BTN_WIDTH, $BTN_HEIGHT)
+    GUICtrlSetPos($CopyAllBtnHandle, _
             $MaxLeft - $COPY_BTN_WIDTH, $MinTop, _
             $COPY_BTN_WIDTH, $BTN_HEIGHT)
 
@@ -178,6 +189,7 @@ Func UpdateControlStates()
                 '[Activate window to be captured or click to cancel]')
         EndIf
         GUICtrlSetState($CopyItemBtnHandle, $GUI_DISABLE)
+        GUICtrlSetState($CopyAllBtnHandle, $GUI_DISABLE)
         If $TreeHandle Then GUICtrlSetState($TreeHandle, $GUI_DISABLE)
     Else
         GUICtrlSetData($CaptureBtnHandle, $CapturedTitle)
@@ -186,6 +198,11 @@ Func UpdateControlStates()
             GUICtrlSetState($CopyItemBtnHandle, $GUI_ENABLE)
         Else
             GUICtrlSetState($CopyItemBtnHandle, $GUI_DISABLE)
+        EndIf
+        If IsArray($TextClasses) AND $TextClasses[0][0] Then
+            GUICtrlSetState($CopyAllBtnHandle, $GUI_ENABLE)
+        Else
+            GUICtrlSetState($CopyAllBtnHandle, $GUI_DISABLE)
         EndIf
         If $TreeHandle Then GUICtrlSetState($TreeHandle, $GUI_ENABLE)
     EndIf
@@ -239,6 +256,32 @@ EndFunc
 Func CopySelectedItem()
 
     ClipPut(GUICtrlRead($SelectedItem, 1))
+
+EndFunc
+
+
+; =============================================================================
+; CopyAllItem():
+;     Called when the user clicks the "Copy All" button.  Copies the entire
+;     content of the TreeView to the clipboard.
+; =============================================================================
+
+Func CopyAllItems()
+
+    Local $Output = 'Control ClassNameNNs grouped by text for window ' _
+        & Escape($CapturedTitle) & @CRLF & @CRLF
+
+    Local $I, $J
+    For $I = 1 To $TextClasses[0][0]
+        $Output &= Escape($TextClasses[$I][0]) & @CRLF
+        Local $Classes = StringSplit($TextClasses[$I][1], @LF)
+        For $J = 1 To $Classes[0]
+            $Output &= @TAB & $Classes[$J] & @CRLF
+        Next
+        $Output &= @CRLF
+    Next
+
+    ClipPut($Output)
 
 EndFunc
 
