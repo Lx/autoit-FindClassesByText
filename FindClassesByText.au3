@@ -21,7 +21,7 @@ Opt('WinWaitDelay', 0)
 
 ; Variables to be accessed by event-handling functions.
 Global $GUIHandle, $TreeHandle, $CaptureBtnHandle
-Global $CapturedTitle = '[No window has been captured]'
+Global $CapturedTitle = '[No window captured yet; click to capture]'
 Global $InCaptureMode = False
 Global $Capturing = False
 Global $TextClasses
