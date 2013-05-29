@@ -67,7 +67,7 @@ Func PrepareGUI()
     GUISetOnEvent($GUI_EVENT_CLOSE, 'Event_GUIClose')
 
     ; Create the Capture button.
-    $CaptureBtnHandle = GUICtrlCreateButton($CapturedTitle, _
+    $CaptureBtnHandle = GUICtrlCreateButton('', _
             Default, Default, Default, Default, $BS_MULTILINE)
     GUICtrlSetResizing($CaptureBtnHandle, _
             $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
@@ -75,6 +75,9 @@ Func PrepareGUI()
 
     ; Arrange everything nicely.
     RepositionControls()
+
+    ; Ensure that the GUI reflects the initial state correctly.
+    UpdateControlStates()
 
     ; Show the GUI.
     GUISetState()
@@ -133,6 +136,24 @@ Func RepositionControls()
     If $TreeHandle <> '' Then GUICtrlSetPos($TreeHandle, _
             $PADDING, 2 * $PADDING + $BTN_HEIGHT, _
             $MaxWidth, $MaxHeight - $BTN_HEIGHT - $PADDING)
+
+EndFunc
+
+
+; =============================================================================
+; UpdateControlStates():
+;     Enables/disables controls as appropriate when the script's state changes
+;     (e.g. capturing data, entering capture mode).
+; =============================================================================
+
+Func UpdateControlStates()
+
+    If $InCaptureMode Then
+        GUICtrlSetData($CaptureBtnHandle, _
+            '[Activate window to be captured or click to cancel]')
+    Else
+        GUICtrlSetData($CaptureBtnHandle, $CapturedTitle)
+    EndIf
 
 EndFunc
 
@@ -279,8 +300,7 @@ EndFunc
 Func EnterCaptureMode()
 
     $InCaptureMode = True
-    GUICtrlSetData($CaptureBtnHandle, _
-            '[Activate window to be captured or click to cancel]')
+    UpdateControlStates()
 
 EndFunc
 
@@ -293,7 +313,7 @@ EndFunc
 Func ExitCaptureMode()
 
     $InCaptureMode = False
-    GUICtrlSetData($CaptureBtnHandle, $CapturedTitle)
+    UpdateControlStates()
 
 EndFunc
 
