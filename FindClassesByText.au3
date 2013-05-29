@@ -159,9 +159,11 @@ Func UpdateControlStates()
             GUICtrlSetData($CaptureBtnHandle, _
                 '[Activate window to be captured or click to cancel]')
         EndIf
+        If $TreeHandle Then GUICtrlSetState($TreeHandle, $GUI_DISABLE)
     Else
         GUICtrlSetData($CaptureBtnHandle, $CapturedTitle)
         GUICtrlSetState($CaptureBtnHandle, $GUI_ENABLE)
+        If $TreeHandle Then GUICtrlSetState($TreeHandle, $GUI_ENABLE)
     EndIf
 
 EndFunc
