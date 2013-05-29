@@ -35,6 +35,9 @@ controls.
 
 ### Next release
 
+*   Add a "Copy Item" button to copy the text of the currently selected
+    TreeView item to the clipboard (thanks to [big_daddy][] for the
+    idea)
 *   Show control text as an AutoIt string definition (with macros as
     appropriate) instead of just naively wrapping it in single quotes
 
@@ -49,5 +52,6 @@ controls.
 
 [AutoIt]: http://www.autoitscript.com/
 [AutoIt Window Info]: http://www.autoitscript.com/autoit3/docs/intro/au3spy.htm
+[big_daddy]: http://www.autoitscript.com/forum/topic/22490-find-classes-by-text-v11/#entry158637
 [_ControlGetHandleByPos()]: http://www.autoitscript.com/forum/topic/14323-controlgethandlebypos/
 [ptrex]: http://www.autoitscript.com/forum/topic/22490-find-classes-by-text/#entry623888

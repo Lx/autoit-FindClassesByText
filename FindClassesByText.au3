@@ -20,15 +20,17 @@ Opt('MustDeclareVars', True)
 Opt('WinWaitDelay', 0)
 
 ; Variables to be accessed by event-handling functions.
-Global $GUIHandle, $TreeHandle, $CaptureBtnHandle
+Global $GUIHandle, $TreeHandle, $CaptureBtnHandle, $CopyItemBtnHandle
 Global $CapturedTitle = '[No window captured yet; click to capture]'
 Global $InCaptureMode = False
 Global $Capturing = False
 Global $TextClasses
+Global $SelectedItem
 
 ; GUI positioning constants.
 Global Const $PADDING = 12
 Global Const $BTN_HEIGHT = 40
+Global Const $COPY_BTN_WIDTH = 60
 
 
 ; =============================================================================
@@ -76,6 +78,13 @@ Func PrepareGUI()
             $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
     GUICtrlSetOnEvent($CaptureBtnHandle, 'ToggleCaptureMode')
 
+    ; Create the Copy Item button.
+    $CopyItemBtnHandle = GUICtrlCreateButton('Copy' & @LF & '&item', _
+            Default, Default, Default, Default, $BS_MULTILINE)
+    GUICtrlSetResizing($CopyItemBtnHandle, _
+            $GUI_DOCKWIDTH + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
+    GUICtrlSetOnEvent($CopyItemBtnHandle, 'CopySelectedItem')
+
     ; Arrange everything nicely.
     RepositionControls()
 
@@ -97,6 +106,7 @@ Func BuildTree()
 
     ; Delete any existing TreeView; this is the easiest way to get rid of all
     ; existing window data.
+    $SelectedItem = ''
     If $TreeHandle <> '' Then GUICtrlDelete($TreeHandle)
 
     ; Create a new TreeView.
@@ -111,9 +121,11 @@ Func BuildTree()
     For $I = 1 To $TextClasses[0][0]
         Local $TextNode = GUICtrlCreateTreeViewItem( _
                 Escape($TextClasses[$I][0]), $TreeHandle)
+                GUICtrlSetOnEvent(-1, 'Event_TreeViewItemSelect')
         Local $Classes = StringSplit($TextClasses[$I][1], @LF)
         For $J = 1 To $Classes[0]
             GUICtrlCreateTreeViewItem($Classes[$J], $TextNode)
+            GUICtrlSetOnEvent(-1, 'Event_TreeViewItemSelect')
         Next
     Next
 
@@ -137,7 +149,10 @@ Func RepositionControls()
 
     GUICtrlSetPos($CaptureBtnHandle, _
             $MinLeft, $MinTop, _
-            $MaxWidth, $BTN_HEIGHT)
+            $MaxWidth - $COPY_BTN_WIDTH - $PADDING, $BTN_HEIGHT)
+    GUICtrlSetPos($CopyItemBtnHandle, _
+            $MaxLeft - $COPY_BTN_WIDTH, $MinTop, _
+            $COPY_BTN_WIDTH, $BTN_HEIGHT)
 
     If $TreeHandle Then GUICtrlSetPos($TreeHandle, _
             $MinLeft, $MinTop + $BTN_HEIGHT + $PADDING, _
@@ -162,10 +177,16 @@ Func UpdateControlStates()
             GUICtrlSetData($CaptureBtnHandle, _
                 '[Activate window to be captured or click to cancel]')
         EndIf
+        GUICtrlSetState($CopyItemBtnHandle, $GUI_DISABLE)
         If $TreeHandle Then GUICtrlSetState($TreeHandle, $GUI_DISABLE)
     Else
         GUICtrlSetData($CaptureBtnHandle, $CapturedTitle)
         GUICtrlSetState($CaptureBtnHandle, $GUI_ENABLE)
+        If $SelectedItem Then
+            GUICtrlSetState($CopyItemBtnHandle, $GUI_ENABLE)
+        Else
+            GUICtrlSetState($CopyItemBtnHandle, $GUI_DISABLE)
+        EndIf
         If $TreeHandle Then GUICtrlSetState($TreeHandle, $GUI_ENABLE)
     EndIf
 
@@ -192,6 +213,32 @@ EndFunc
 Func Event_GUIResize()
 
     RepositionControls()
+
+EndFunc
+
+
+; =============================================================================
+; Event_TreeViewItemSelect():
+;     Called after the user has selected a TreeView item.
+; =============================================================================
+
+Func Event_TreeViewItemSelect()
+
+    $SelectedItem = @GUI_CtrlId
+    UpdateControlStates()
+
+EndFunc
+
+
+; =============================================================================
+; CopySelectedItem():
+;     Called when the user clicks the "Copy Item" button.  Copies the text of
+;     the selected TreeView item to the clipboard.
+; =============================================================================
+
+Func CopySelectedItem()
+
+    ClipPut(GUICtrlRead($SelectedItem, 1))
 
 EndFunc
 
