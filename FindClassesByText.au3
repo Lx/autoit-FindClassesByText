@@ -310,15 +310,10 @@ EndFunc
 
 Func Escape(Const ByRef $InputStr)
 
-    ; String representations of certain special character sequences.  Longer
+    ; AutoIt representations of certain special character sequences.  Longer
     ; sequences must be defined AFTER shorter ones contained by them in order
     ; to be correctly honoured (i.e. @CRLF after @CR).
-    Local $MacroFor[4][2] = [ _
-        [ @CR,      '@CR'   ], _
-        [ @CRLF,    '@CRLF' ], _
-        [ @LF,      '@LF'   ], _
-        [ @TAB,     '@TAB'  ] _
-    ]
+    Local $Macros[4] = [ '@CR', '@CRLF', '@LF', '@TAB' ]
 
     ; The output string to be built incrementally and eventually returned.
     Local $OutputStr = ''
@@ -333,19 +328,19 @@ Func Escape(Const ByRef $InputStr)
         ; string data ends.  Assume at first that the entire remainder of the
         ; string is one big literal.  If we find a macro, remember which one.
         Local $LiteralEndPos = StringLen($InputStr) + 1
-        Local $MacroID = -1
+        Local $Macro = ''
 
         ; Look for each macro and remember which one appears first.  Check them
         ; all, because e.g. @CRLF would have the same position as @CR.
         Local $I
-        For $I = 0 To UBound($MacroFor, 1) - 1
+        For $I = 0 To UBound($Macros) - 1
             Local $ThisMacroPos _
-                = StringInStr($InputStr, $MacroFor[$I][0], 0, 1, $StartPos)
+                = StringInStr($InputStr, Execute($Macros[$I]), 0, 1, $StartPos)
             If $ThisMacroPos = 0 Then ContinueLoop
             If $LiteralEndPos > 0 AND $ThisMacroPos > $LiteralEndPos _
                 Then ContinueLoop
             $LiteralEndPos = $ThisMacroPos
-            $MacroID = $I
+            $Macro = $Macros[$I]
         Next
 
         ; Escape the string literal if there is one.
@@ -369,10 +364,10 @@ Func Escape(Const ByRef $InputStr)
         EndIf
 
         ; If we found a macro earlier then write it out.
-        If $MacroID >= 0 Then
+        If $Macro <> '' Then
             If $OutputStr <> '' Then $OutputStr &= ' & '
-            $OutputStr &= $MacroFor[$MacroID][1]
-            $StartPos += StringLen($MacroFor[$MacroID][0])
+            $OutputStr &= $Macro
+            $StartPos += StringLen(Execute($Macro))
         EndIf
 
     WEnd
