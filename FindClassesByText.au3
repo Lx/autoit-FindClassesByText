@@ -49,7 +49,7 @@ While True
         $TextClasses = WinGetClassesByText($CapturedWindow)
         BuildTree()
         ; Return to normal operation mode.
-        ExitCaptureMode()
+        ToggleCaptureMode()
     EndIf
     WinWaitActive($GUIHandle)
 WEnd
@@ -74,7 +74,7 @@ Func PrepareGUI()
             Default, Default, Default, Default, $BS_MULTILINE)
     GUICtrlSetResizing($CaptureBtnHandle, _
             $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
-    GUICtrlSetOnEvent($CaptureBtnHandle, 'Event_BtnCapture')
+    GUICtrlSetOnEvent($CaptureBtnHandle, 'ToggleCaptureMode')
 
     ; Arrange everything nicely.
     RepositionControls()
@@ -194,18 +194,16 @@ EndFunc
 
 
 ; =============================================================================
-; Event_BtnCapture():
+; ToggleCaptureMode():
 ;     Called when the Capture button is clicked, and enters or exits capturing
-;     mode as appropriate.
+;     mode as appropriate.  Also called when data capturing is complete.
 ; =============================================================================
 
-Func Event_BtnCapture()
+Func ToggleCaptureMode()
 
-    If $InCaptureMode Then
-        ExitCaptureMode()
-    Else
-        EnterCaptureMode()
-    EndIf
+    $InCaptureMode = NOT $InCaptureMode
+    $Capturing = False
+    UpdateControlStates()
 
 EndFunc
 
@@ -300,32 +298,6 @@ Func AddClass(ByRef $Texts, $Text, $Class)
     $Texts[0][0] += 1
     $Texts[$Texts[0][0]][0] = $Text
     $Texts[$Texts[0][0]][1] = $Class
-
-EndFunc
-
-; ==============================================================================
-; EnterCaptureMode():
-;     Performs whatever is necessary when a capture is initiated.
-; ==============================================================================
-
-Func EnterCaptureMode()
-
-    $InCaptureMode = True
-    UpdateControlStates()
-
-EndFunc
-
-
-; ==============================================================================
-; ExitCaptureMode():
-;     Performs whatever is necessary when a capture is cancelled or completed.
-; ==============================================================================
-
-Func ExitCaptureMode()
-
-    $Capturing = False
-    $InCaptureMode = False
-    UpdateControlStates()
 
 EndFunc
 
