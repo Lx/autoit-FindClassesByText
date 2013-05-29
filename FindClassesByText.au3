@@ -22,7 +22,7 @@ Opt('WinWaitDelay', 0)
 ; Variables to be accessed by event-handling functions.
 Global $GUIHandle, $TreeHandle, $CaptureBtnHandle
 Global $CapturedTitle = '[No window has been captured]'
-Global $Capturing = False
+Global $InCaptureMode = False
 Global $TextClasses
 
 ; GUI positioning constants.
@@ -37,7 +37,7 @@ PrepareGUI()
 While True
     WinWaitNotActive($GUIHandle)
     ; Another window is active. Capture it if appropriate.
-    If $Capturing Then
+    If $InCaptureMode Then
         Local $CapturedWindow = WinGetHandle('[ACTIVE]')
         Beep(400, 50)
         ; Grab title for display on button.
@@ -169,7 +169,7 @@ EndFunc
 
 Func Event_BtnCapture()
 
-    If $Capturing Then
+    If $InCaptureMode Then
         ExitCaptureMode()
     Else
         EnterCaptureMode()
@@ -278,7 +278,7 @@ EndFunc
 
 Func EnterCaptureMode()
 
-    $Capturing = True
+    $InCaptureMode = True
     GUICtrlSetData($CaptureBtnHandle, _
             '[Activate window to be captured or click to cancel]')
 
@@ -292,7 +292,7 @@ EndFunc
 
 Func ExitCaptureMode()
 
-    $Capturing = False
+    $InCaptureMode = False
     GUICtrlSetData($CaptureBtnHandle, $CapturedTitle)
 
 EndFunc
