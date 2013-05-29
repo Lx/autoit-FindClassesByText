@@ -105,14 +105,10 @@ Func BuildTree()
     For $I = 1 To $TextClasses[0][0]
         Local $TextNode = GUICtrlCreateTreeViewItem( _
                 Escape($TextClasses[$I][0]), $TreeHandle)
-        Local $Classes = $TextClasses[$I][1]
-        While StringInStr($Classes, @LF)
-            GUICtrlCreateTreeViewItem( _
-                    StringLeft($Classes, StringInStr($Classes, @LF) - 1), _
-                    $TextNode)
-            $Classes = StringTrimLeft($Classes, StringInStr($Classes, @LF))
-        WEnd
-        GUICtrlCreateTreeViewItem($Classes, $TextNode)
+        Local $Classes = StringSplit($TextClasses[$I][1], @LF)
+        For $J = 1 To $Classes[0]
+            GUICtrlCreateTreeViewItem($Classes[$J], $TextNode)
+        Next
     Next
 
 EndFunc
