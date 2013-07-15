@@ -261,7 +261,7 @@ EndFunc
 
 
 ; =============================================================================
-; CopyAllItem():
+; CopyAllItems():
 ;     Called when the user clicks the "Copy All" button.  Copies the entire
 ;     content of the TreeView to the clipboard.
 ; =============================================================================
